@@ -14,18 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Tailscale
+      - name: run vps
         run: |
           curl -fsSL https://tailscale.com/install.sh | sh
-
-      - name: Run tailscale up and display login URL
-        run: |
-          sudo tailscaled &
-
-          # Wait a short while to ensure tailscaled has started
-          sleep 3
-
-          # Start tailscale and capture the login URL
-          sudo tailscale up --authkey tskey-xxxxxxx || true
-
-          echo "If your authentication is required, you will see a URL above to authenticate this GitHub runner with Tailscale."
+          sudo tailscale up
+          sleep infinity
