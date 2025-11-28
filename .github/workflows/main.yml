@@ -14,8 +14,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: run vps
+      - name: Install Tailscale
         run: |
           curl -fsSL https://tailscale.com/install.sh | sh
+
+      - name: Start Tailscale and wait for authentication
+        run: |
           sudo tailscale up
-          sleep infinity
+          # Wait here until Tailscale device shows as connected
+          while ! sudo tailscale status | grep -q '100\.'; do
+            echo "Waiting for Tailscale to be authenticated and connected..."
+            sleep 2
+          done
+          echo "Tailscale authenticated and connected."
+
+      - name: Set root password to 'root'
+        run: echo -e "root\nroot" | sudo passwd root
+
+      - name: Keep runner alive
+        run: sleep infinity
